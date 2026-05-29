@@ -2,7 +2,7 @@ import os
 import shutil
 from RAG import ingest_documents, purge_document
 
-chemin_corpus = r"C:\Users\antoi\Documents\S8\RAG\corpus"
+chemin_corpus = r"Z:\S8\Projet_RAG\corpus"
 
 def add_corpus(nom):
     return os.makedirs(os.path.join(chemin_corpus, nom), exist_ok=True)
