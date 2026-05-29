@@ -1,0 +1,56 @@
+import wikipediaapi
+import io
+import os
+
+def get_wikipedia_page(mots_cles):
+    wiki = wikipediaapi.Wikipedia(
+        language='fr',
+        user_agent='MonAppRAG/1.0'
+    )
+
+    resultats = wiki.search(mots_cles)
+
+    if not resultats.pages:
+        return None
+
+    nom_page = list(resultats.pages.keys())[0]      # première clé du dict
+    print(f"[Wikipedia] Page trouvée : {nom_page}")
+
+    page = wiki.page(nom_page)
+
+    if not page.exists():
+        return None
+
+    return page
+
+def create_corpus(mots_cles, page):
+    from corpus import add_corpus, add_documents_to_corpus
+
+    nom_corpus = f"Wikipedia_{mots_cles.replace(' ', '_')}"
+    add_corpus(nom_corpus)
+
+    os.makedirs("tmp", exist_ok=True)
+
+    for section in page.sections:
+        if section.text.strip():
+            chemin = os.path.join("tmp", section.title.replace(' ', '_') + ".txt")
+            with open(chemin, "w", encoding="utf-8") as f:
+                f.write(section.text)
+
+    for file in os.listdir("tmp"):
+        file_path = os.path.join("tmp", file)
+        if os.path.isfile(file_path):
+            with open(file_path, "rb") as f:
+                uploaded_file = io.BytesIO(f.read())
+            uploaded_file.name = file
+            add_documents_to_corpus(nom_corpus, [uploaded_file])
+
+    return nom_corpus
+
+
+
+if __name__ == "__main__":
+    page = get_wikipedia_page("ESEO")
+    if page:
+        nom = create_corpus("ESEO", page)
+        print(f"Corpus créé : {nom}")
