@@ -51,47 +51,43 @@ def main():
 
 
 
-    with st.sidebar:
-        st.write("Paramètres")
+    def sidebar():
+        with st.sidebar:
+            st.write("Paramètres")
+            models_data = ollama.list()
+            model_list = [model['model'] for model in models_data.get('models', [])]
+            selected_model = st.selectbox("Choisissez un modèle Ollama", options=model_list, index=0 if model_list else None)
 
-        models_data = ollama.list()
-        model_list = [model['model'] for model in models_data.get('models', [])]
-        selected_model = st.selectbox("Choisissez un modèle Ollama",options=model_list,index=0 if model_list else None)
+            st.write("Préprompt")
+            system_prompt = st.text_area(label="Définissez le préprompt (System Prompt) :", height=150)
 
-        st.write("Préprompt")
+            st.write("Bases de connaissances")
+            corpus_list = get_corpus_list()
+            selected_corpus = st.selectbox("Corpus local :", options=corpus_list, index=0 if corpus_list else None)
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button('Nouveau', width="stretch"):
+                    popup_ajout_corpus()
+            with col2:
+                if selected_corpus == "Aucun":
+                    st.button('Modifier', width="stretch", disabled=True)
+                else:
+                    if st.button('Modifier', width="stretch", disabled=False):
+                        popup_corpus()
 
-        system_prompt = st.text_area(
-            label="Définissez le préprompt (System Prompt) :",
-            height=150
-        )
+            wikipedia_keywords = st.text_input("Wikipedia :", placeholder="ex: ESEO")
+            st.info("Toutes modifications ici sera prise en compte dès le prochain message")
+            st.write("version :", st.__version__)
 
-        st.write("Bases de connaissances")
+        return {
+            "model": selected_model,
+            "system_prompt": system_prompt,
+            "corpus": selected_corpus,
+            "wikipedia_keywords": wikipedia_keywords,
+        }
 
-        #Corpus
-        corpus_list = get_corpus_list()
-        selected_corpus = st.selectbox("Corpus local :",options=corpus_list,index=0 if corpus_list else None)
 
-        # Wikipedia
-        Mots_Cles_wiki = st.text_area(
-            label="Wikipedia :",
-            height=10
-        )
-
-        col1,col2 = st.columns(2)
-        with col1:
-            if st.button('Nouveau',width="stretch"):
-                popup_ajout_corpus()
-        with col2:
-            if selected_corpus == "Aucun":
-                st.button('Modifier', width="stretch", disabled=True)
-            else:
-                if st.button('Modifier', width="stretch", disabled=False):
-                    popup_corpus()
-
-        st.info("Toutes modifications ici sera prise en compte dés le prochain message")
-
-        st.write("version :",st.__version__)
-
+    params = sidebar() 
 
     for msg in st.session_state["message"]:
         with st.chat_message(msg["role"]):
@@ -101,7 +97,7 @@ def main():
     if requete:
         with st.chat_message("user"):
             st.write(requete)
-        query(requete, corpus=selected_corpus, wikipedia_keywords=Mots_Cles_wiki, model=selected_model, system_prompt=system_prompt)
+        query(requete, corpus=params["corpus"], wikipedia_keywords=params["wikipedia_keywords"],model=params["model"],system_prompt=params["system_prompt"])
 
 
 if __name__ == "__main__":
