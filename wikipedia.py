@@ -1,13 +1,12 @@
 import wikipediaapi
 import io
 import os
+import uuid
 from RAG import query_RAG, chemin_corpus
 
+
 def get_wikipedia_page(mots_cles):
-    wiki = wikipediaapi.Wikipedia(
-        language='fr',
-        user_agent='MonAppRAG/1.0'
-    )
+    wiki = wikipediaapi.Wikipedia(language='fr', user_agent='MonAppRAG/1.0')
     page = wiki.page(mots_cles)
     if not page.exists():
         results = wiki._query({
@@ -22,7 +21,7 @@ def get_wikipedia_page(mots_cles):
         return None
     print(f"[Wikipedia] Page trouvée : {page.title}")
     return page
-    
+
 
 def create_corpus(mots_cles, page):
     from corpus import add_corpus, add_documents_to_corpus
@@ -30,21 +29,21 @@ def create_corpus(mots_cles, page):
     nom_corpus = f"Wikipedia_{mots_cles.replace(' ', '_')}"
     add_corpus(nom_corpus)
 
-    os.makedirs("tmp", exist_ok=True)
-    for f in os.listdir("tmp"):
-        os.remove(os.path.join("tmp", f))
+    tmp_dir = os.path.join(r"D:\Antoine_Vadot\Projet_RAG\tmp", str(uuid.uuid4()))
+    os.makedirs(tmp_dir, exist_ok=True)
 
-    chemin = os.path.join("tmp", "page.txt")
-    with open(chemin, "w", encoding="utf-8") as f:
-        f.write(page.text)
+    try:
+        chemin = os.path.join(tmp_dir, "page.txt")
+        with open(chemin, "w", encoding="utf-8") as f:
+            f.write(page.text)
 
-    for file in os.listdir("tmp"):
-        file_path = os.path.join("tmp", file)
-        if os.path.isfile(file_path):
-            with open(file_path, "rb") as f:
-                uploaded_file = io.BytesIO(f.read())
-            uploaded_file.name = file
-            add_documents_to_corpus(nom_corpus, [uploaded_file])
+        with open(chemin, "rb") as f:
+            uploaded_file = io.BytesIO(f.read())
+        uploaded_file.name = "page.txt"
+        add_documents_to_corpus(nom_corpus, [uploaded_file])
+    finally:
+        import shutil
+        shutil.rmtree(tmp_dir, ignore_errors=True)
 
     return nom_corpus
 
@@ -52,9 +51,9 @@ def create_corpus(mots_cles, page):
 def wikipedia_query(mots_cles, user_input):
     nom_corpus = f"Wikipedia_{mots_cles.replace(' ', '_')}"
     corpus_path = os.path.join(chemin_corpus, nom_corpus)
-    page_txt = os.path.join(corpus_path, "page.txt")
+    chroma_path = os.path.join(corpus_path, "chroma_db")
 
-    if not os.path.exists(corpus_path) or not os.path.exists(page_txt):
+    if not os.path.exists(chroma_path):
         import shutil
         if os.path.exists(corpus_path):
             shutil.rmtree(corpus_path)
@@ -67,14 +66,8 @@ def wikipedia_query(mots_cles, user_input):
     return query_RAG(nom_corpus, user_input)
 
 
-    
-
-
-
-
 if __name__ == "__main__":
     page = get_wikipedia_page("ESEO")
     if page:
         nom = create_corpus("ESEO", page)
         print(f"Corpus créé : {nom}")
-

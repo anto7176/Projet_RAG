@@ -1,8 +1,7 @@
 import os
 import shutil
-from RAG import ingest_documents, purge_document
+from RAG import ingest_documents, purge_document, chemin_corpus
 
-chemin_corpus = r"D:\Antoine_Vadot\Projet_RAG\corpus"
 
 def add_corpus(nom):
     return os.makedirs(os.path.join(chemin_corpus, nom), exist_ok=True)
@@ -21,24 +20,26 @@ def add_documents_to_corpus(nom_corpus, uploaded_files):
 
     saved_names = []
     for doc in uploaded_files:
+        content = doc.read()
         dest_path = os.path.join(dest, doc.name)
         with open(dest_path, "wb") as f:
-            f.write(doc.read())
+            f.write(content)
         saved_names.append(doc.name)
 
-    ingest_documents(nom_corpus, saved_names)         # doc.read() = contenu binaire
+    ingest_documents(nom_corpus, saved_names)
 
 
 def get_documents_from_corpus(corpus):
     corpus_path = os.path.join(chemin_corpus, corpus)
     return [f for f in os.listdir(corpus_path)
-        if os.path.isfile(os.path.join(corpus_path, f))]
+            if os.path.isfile(os.path.join(corpus_path, f))]
 
 
 def delete_document_from_corpus(nom_corpus, nom_document):
-    purge_document(nom_corpus, nom_document) 
+    purge_document(nom_corpus, nom_document)
     corpus_path = os.path.join(chemin_corpus, nom_corpus, nom_document)
     os.remove(corpus_path)
+
 
 def delete_corpus(nom_corpus):
     corpus_path = os.path.join(chemin_corpus, nom_corpus)

@@ -3,6 +3,7 @@ import ollama
 from RAG import query_RAG
 from wikipedia import wikipedia_query
 
+
 def session_init():
     if 'message' not in st.session_state:
         st.session_state['message'] = []
@@ -18,7 +19,9 @@ def query(user_input, corpus=None, wikipedia_keywords=None, model='mistral', sys
 
     if wikipedia_keywords and wikipedia_keywords.strip():
         with st.spinner("Recherche Wikipedia en cours..."):
-            contexte += wikipedia_query(wikipedia_keywords, user_input)
+            wiki_ctx = wikipedia_query(wikipedia_keywords, user_input)
+            if wiki_ctx:
+                contexte += "\n" + wiki_ctx
 
     input_augmente = (
         f"En utilisant les informations suivantes :\n{contexte}\nRéponds à la question : {user_input}"
@@ -27,17 +30,15 @@ def query(user_input, corpus=None, wikipedia_keywords=None, model='mistral', sys
 
     sys_msg = system_prompt.strip() if system_prompt.strip() else "Tu es un assistant IA utile, précis et concis qui répond en français."
 
+    historique = [{"role": m["role"], "content": m["content"]}
+                  for m in st.session_state["message"][:-1]]
+
+    messages = [{"role": "system", "content": sys_msg}] + historique + [{"role": "user", "content": input_augmente}]
+
     with st.chat_message("assistant"):
         response_placeholder = st.empty()
         full_response = ""
-        for chunk in ollama.chat(
-            model=model,
-            messages=[
-                {'role': 'system', 'content': sys_msg},
-                {'role': 'user', 'content': input_augmente}
-            ],
-            stream=True,
-        ):
+        for chunk in ollama.chat(model=model, messages=messages, stream=True):
             full_response += chunk.message.content
             response_placeholder.write(full_response + "|")
         response_placeholder.write(full_response)
