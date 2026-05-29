@@ -10,6 +10,14 @@ def get_wikipedia_page(mots_cles):
     )
     page = wiki.page(mots_cles)
     if not page.exists():
+        results = wiki._query({
+            "action": "query", "list": "search",
+            "srsearch": mots_cles, "srlimit": 1
+        })
+        hits = results.get("query", {}).get("search", [])
+        if hits:
+            page = wiki.page(hits[0]["title"])
+    if not page.exists():
         print(f"[Wikipedia] Page non trouvée : {mots_cles}")
         return None
     print(f"[Wikipedia] Page trouvée : {page.title}")
@@ -23,12 +31,12 @@ def create_corpus(mots_cles, page):
     add_corpus(nom_corpus)
 
     os.makedirs("tmp", exist_ok=True)
+    for f in os.listdir("tmp"):
+        os.remove(os.path.join("tmp", f))
 
-    for section in page.sections:
-        if section.text.strip():
-            chemin = os.path.join("tmp", section.title.replace(' ', '_') + ".txt")
-            with open(chemin, "w", encoding="utf-8") as f:
-                f.write(section.text)
+    chemin = os.path.join("tmp", "page.txt")
+    with open(chemin, "w", encoding="utf-8") as f:
+        f.write(page.text)
 
     for file in os.listdir("tmp"):
         file_path = os.path.join("tmp", file)

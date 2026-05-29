@@ -28,7 +28,7 @@ def main():
 
 
     @st.dialog("Modifier le corpus")
-    def popup_corpus():
+    def popup_corpus(selected_corpus):
         st.write(f"Corpus : **{selected_corpus}**")
         list_doc = get_documents_from_corpus(selected_corpus)
         df = pd.DataFrame({"Sélectionner": [False] * len(list_doc), "Document": list_doc})
@@ -73,7 +73,7 @@ def main():
                     st.button('Modifier', width="stretch", disabled=True)
                 else:
                     if st.button('Modifier', width="stretch", disabled=False):
-                        popup_corpus()
+                        popup_corpus(selected_corpus)
 
             wikipedia_keywords = st.text_input("Wikipedia :", placeholder="ex: ESEO")
             st.info("Toutes modifications ici sera prise en compte dès le prochain message")
