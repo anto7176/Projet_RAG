@@ -8,17 +8,8 @@ def session_init():
         st.session_state['message'] = []
 
 
-
-def get_previous_messages():
-    if "message" in st.session_state:
-        return st.session_state["message"]
-    else:
-        return []
-    
-
-def query(user_input, corpus=None, wikipedia_keywords=None):
-    msg = {"role": "user", "content": user_input}
-    st.session_state["message"].append(msg)
+def query(user_input, corpus=None, wikipedia_keywords=None, model='mistral', system_prompt=''):
+    st.session_state["message"].append({"role": "user", "content": user_input})
 
     contexte = ""
 
@@ -26,31 +17,28 @@ def query(user_input, corpus=None, wikipedia_keywords=None):
         contexte += query_RAG(corpus, user_input)
 
     if wikipedia_keywords and wikipedia_keywords.strip():
-        st.caption("Recherche Wikipedia en cours...")
-        contexte += wikipedia_query(wikipedia_keywords, user_input)
-        st.caption("Recherche Wikipedia terminée.")
-
-    print(contexte)
+        with st.spinner("Recherche Wikipedia en cours..."):
+            contexte += wikipedia_query(wikipedia_keywords, user_input)
 
     input_augmente = (
         f"En utilisant les informations suivantes :\n{contexte}\nRéponds à la question : {user_input}"
         if contexte else user_input
     )
 
+    sys_msg = system_prompt.strip() if system_prompt.strip() else "Tu es un assistant IA utile, précis et concis qui répond en français."
+
     with st.chat_message("assistant"):
         response_placeholder = st.empty()
         full_response = ""
-        response = ollama.chat(
-            model='mistral',
+        for chunk in ollama.chat(
+            model=model,
             messages=[
-                {'role': 'system', 'content': 'Tu es un assistant IA utile, précis et concis qui répond en français.'},
+                {'role': 'system', 'content': sys_msg},
                 {'role': 'user', 'content': input_augmente}
             ],
             stream=True,
-        )
-        for chunk in response:
-            full_response += chunk['message']['content']
+        ):
+            full_response += chunk.message.content
             response_placeholder.write(full_response + "|")
         response_placeholder.write(full_response)
         st.session_state["message"].append({"role": "assistant", "content": full_response})
- 

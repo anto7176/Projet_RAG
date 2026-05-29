@@ -1,7 +1,7 @@
 import wikipediaapi
 import io
 import os
-from RAG import *
+from RAG import query_RAG, chemin_corpus
 
 def get_wikipedia_page(mots_cles):
     wiki = wikipediaapi.Wikipedia(
@@ -41,11 +41,18 @@ def create_corpus(mots_cles, page):
     return nom_corpus
 
 
-def wikipedia_query(mots_cles,user_input):
-    page = get_wikipedia_page(mots_cles)
-    if page :
-        corpus = create_corpus(mots_cles,page)
-    return query_RAG(corpus,user_input)
+def wikipedia_query(mots_cles, user_input):
+    nom_corpus = f"Wikipedia_{mots_cles.replace(' ', '_')}"
+    corpus_path = os.path.join(chemin_corpus, nom_corpus)
+    
+    if not os.path.exists(corpus_path):
+        page = get_wikipedia_page(mots_cles)
+        if page:
+            create_corpus(mots_cles, page)
+        else:
+            return ""
+    
+    return query_RAG(nom_corpus, user_input)
 
 
     

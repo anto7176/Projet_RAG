@@ -101,7 +101,7 @@ def main():
     if requete:
         with st.chat_message("user"):
             st.write(requete)
-        query(requete, corpus=selected_corpus, wikipedia_keywords=Mots_Cles_wiki)    
+        query(requete, corpus=selected_corpus, wikipedia_keywords=Mots_Cles_wiki, model=selected_model, system_prompt=system_prompt)
 
 
 if __name__ == "__main__":
