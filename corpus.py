@@ -1,10 +1,14 @@
 import os
 import shutil
+import streamlit as st
 from RAG import ingest_documents, purge_document, chemin_corpus
 
 
 def add_corpus(nom):
-    return os.makedirs(os.path.join(chemin_corpus, nom), exist_ok=True)
+    if nom in get_corpus_list():
+        return
+    
+    os.makedirs(os.path.join(chemin_corpus, nom), exist_ok=True)
 
 
 def get_corpus_list():
@@ -25,6 +29,8 @@ def add_documents_to_corpus(nom_corpus, uploaded_files):
         with open(dest_path, "wb") as f:
             f.write(content)
         saved_names.append(doc.name)
+
+    st.write(saved_names)
 
     ingest_documents(nom_corpus, saved_names)
 

@@ -1,6 +1,0 @@
-Quatre groupes de recherche sont organisés autour des compétences et des spécialisations des enseignants-chercheurs de l'école :
-
-RF-EMC : radiofréquence, antenne et RFID ;
-GSII : contrôle non destructif, instrumentation biomédicale et capteurs optiques pour la mesure mécanique ;
-AGE : Automatique et Génie électrique
-ÉRIS : Recherche en Informatique et Systèmes
