@@ -1,6 +1,7 @@
 import wikipediaapi
 import io
 import os
+from RAG import *
 
 def get_wikipedia_page(mots_cles):
     wiki = wikipediaapi.Wikipedia(
@@ -48,9 +49,21 @@ def create_corpus(mots_cles, page):
     return nom_corpus
 
 
+def wikipedia_query(mots_cles,user_input):
+    page = get_wikipedia_page(mots_cles)
+    if page :
+        corpus = create_corpus(mots_cles,page)
+        return query_RAG(corpus,user_input)
+    else :
+        return ""
+
+    
+
+
 
 if __name__ == "__main__":
     page = get_wikipedia_page("ESEO")
     if page:
         nom = create_corpus("ESEO", page)
         print(f"Corpus créé : {nom}")
+

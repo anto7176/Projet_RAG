@@ -2,6 +2,7 @@ from LLM import *
 import streamlit as st
 from corpus import *
 import pandas as pd
+from wikipedia import *
 
 
 
@@ -46,6 +47,13 @@ def main():
         if st.button('Supprimer ce corpus', width="stretch", disabled=False):
             delete_corpus(selected_corpus)
             st.rerun()
+    
+
+    requete = st.chat_input(placeholder="Your message")
+    if requete:
+        with st.chat_message("user"):
+            st.write(requete)
+        query(requete, corpus=selected_corpus)
 
 
 
@@ -70,6 +78,15 @@ def main():
         corpus_list = get_corpus_list()
         selected_corpus = st.selectbox("Corpus local :",options=corpus_list,index=0 if corpus_list else None)
 
+        # Wikipedia
+        Mots_Cles_wiki = st.text_area(
+            label="Wikipedia :",
+            height=10
+        )
+        if Mots_Cles_wiki :
+            if requete :
+                wikipedia_query(Mots_Cles_wiki,requete)
+
         col1,col2 = st.columns(2)
         with col1:
             if st.button('Nouveau',width="stretch"):
@@ -91,11 +108,7 @@ def main():
             st.write(msg["content"])
 
 
-    requete = st.chat_input(placeholder="Your message")
-    if requete:
-        with st.chat_message("user"):
-            st.write(requete)
-        query(requete, corpus=selected_corpus)
+    
 
 
 if __name__ == "__main__":
