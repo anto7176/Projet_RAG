@@ -52,14 +52,18 @@ def create_corpus(mots_cles, page):
 def wikipedia_query(mots_cles, user_input):
     nom_corpus = f"Wikipedia_{mots_cles.replace(' ', '_')}"
     corpus_path = os.path.join(chemin_corpus, nom_corpus)
-    
-    if not os.path.exists(corpus_path):
+    page_txt = os.path.join(corpus_path, "page.txt")
+
+    if not os.path.exists(corpus_path) or not os.path.exists(page_txt):
+        import shutil
+        if os.path.exists(corpus_path):
+            shutil.rmtree(corpus_path)
         page = get_wikipedia_page(mots_cles)
         if page:
             create_corpus(mots_cles, page)
         else:
             return ""
-    
+
     return query_RAG(nom_corpus, user_input)
 
 
