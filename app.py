@@ -47,13 +47,6 @@ def main():
         if st.button('Supprimer ce corpus', width="stretch", disabled=False):
             delete_corpus(selected_corpus)
             st.rerun()
-    
-
-    requete = st.chat_input(placeholder="Your message")
-    if requete:
-        with st.chat_message("user"):
-            st.write(requete)
-        query(requete, corpus=selected_corpus)
 
 
 
@@ -83,9 +76,6 @@ def main():
             label="Wikipedia :",
             height=10
         )
-        if Mots_Cles_wiki :
-            if requete :
-                wikipedia_query(Mots_Cles_wiki,requete)
 
         col1,col2 = st.columns(2)
         with col1:
@@ -107,8 +97,11 @@ def main():
         with st.chat_message(msg["role"]):
             st.write(msg["content"])
 
-
-    
+    requete = st.chat_input(placeholder="Your message")
+    if requete:
+        with st.chat_message("user"):
+            st.write(requete)
+        query(requete, corpus=selected_corpus, wikipedia_keywords=Mots_Cles_wiki)    
 
 
 if __name__ == "__main__":

@@ -8,21 +8,13 @@ def get_wikipedia_page(mots_cles):
         language='fr',
         user_agent='MonAppRAG/1.0'
     )
-
-    resultats = wiki.search(mots_cles)
-
-    if not resultats.pages:
-        return None
-
-    nom_page = list(resultats.pages.keys())[0]      # première clé du dict
-    print(f"[Wikipedia] Page trouvée : {nom_page}")
-
-    page = wiki.page(nom_page)
-
+    page = wiki.page(mots_cles)
     if not page.exists():
+        print(f"[Wikipedia] Page non trouvée : {mots_cles}")
         return None
-
+    print(f"[Wikipedia] Page trouvée : {page.title}")
     return page
+    
 
 def create_corpus(mots_cles, page):
     from corpus import add_corpus, add_documents_to_corpus
