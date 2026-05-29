@@ -1,0 +1,1 @@
+En informatique, As est un langage assembleur sous Unix.

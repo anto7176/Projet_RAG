@@ -1,6 +1,7 @@
 import streamlit as st
 import ollama
 from RAG import query_RAG
+from wikipedia import wikipedia_query
 
 def session_init():
     if 'message' not in st.session_state:
@@ -25,10 +26,11 @@ def query(user_input, corpus=None, wikipedia_keywords=None):
         contexte += query_RAG(corpus, user_input)
 
     if wikipedia_keywords and wikipedia_keywords.strip():
-        from wikipedia import wikipedia_query
         st.caption("Recherche Wikipedia en cours...")
         contexte += wikipedia_query(wikipedia_keywords, user_input)
         st.caption("Recherche Wikipedia terminée.")
+
+    print(contexte)
 
     input_augmente = (
         f"En utilisant les informations suivantes :\n{contexte}\nRéponds à la question : {user_input}"

@@ -3,12 +3,22 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from langchain_ollama import OllamaEmbeddings
 import os
+import tempfile
+import os
 
-chemin_corpus = r"C:\Users\antoi\Documents\S8\RAG\corpus"
+    
+    
+os.environ["TMPDIR"] = r"D:\Antoine_Vadot\Projet_RAG\tmp"
+os.environ["TEMP"] = r"D:\Antoine_Vadot\Projet_RAG\tmp"
+os.environ["TMP"] = r"D:\Antoine_Vadot\Projet_RAG\tmp"
+
+chemin_corpus = r"D:\Antoine_Vadot\Projet_RAG\corpus"
 
 EMBEDDING_MODEL = "nomic-embed-text"
 
 def ingest_documents(nom_corpus,list_doc):
+
+
 
     chroma_path = os.path.join(chemin_corpus, nom_corpus, "chroma_db")
     embeddings = OllamaEmbeddings(model=EMBEDDING_MODEL)
@@ -18,8 +28,8 @@ def ingest_documents(nom_corpus,list_doc):
     )
 
     splitter = RecursiveCharacterTextSplitter(
-        chunk_size=500,
-        chunk_overlap=50
+        chunk_size=1000,
+        chunk_overlap=200
     )
 
     for nom_doc in list_doc:

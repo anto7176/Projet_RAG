@@ -45,11 +45,11 @@ def wikipedia_query(mots_cles,user_input):
     page = get_wikipedia_page(mots_cles)
     if page :
         corpus = create_corpus(mots_cles,page)
-        return query_RAG(corpus,user_input)
-    else :
-        return ""
+    return query_RAG(corpus,user_input)
+
 
     
+
 
 
 
