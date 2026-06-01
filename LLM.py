@@ -2,6 +2,7 @@ import streamlit as st
 import ollama
 from RAG import query_RAG
 from wikipedia import wikipedia_query
+from web import get_URL, web_query
 
 
 def session_init():
@@ -9,7 +10,7 @@ def session_init():
         st.session_state['message'] = []
 
 
-def query(user_input, corpus=None, wikipedia_keywords=None, model='mistral', system_prompt=''):
+def query(user_input, corpus=None, wikipedia_keywords=None, model='mistral', system_prompt='', web_search=False):
     st.session_state["message"].append({"role": "user", "content": user_input})
 
     contexte = ""
@@ -22,6 +23,14 @@ def query(user_input, corpus=None, wikipedia_keywords=None, model='mistral', sys
             wiki_ctx = wikipedia_query(wikipedia_keywords, user_input)
             if wiki_ctx:
                 contexte += "\n" + wiki_ctx
+    
+    if web_search:
+        with st.spinner("Recherche Web en cours..."):
+            urls = get_URL(user_input)
+            st.caption(f"🌐 URLs : {', '.join(urls)}")
+            web_ctx = web_query(urls)
+            if web_ctx:
+                contexte += "\n" + web_ctx
 
     input_augmente = (
         f"En utilisant les informations suivantes :\n{contexte}\nRéponds à la question : {user_input}"

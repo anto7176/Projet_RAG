@@ -30,7 +30,6 @@ def add_documents_to_corpus(nom_corpus, uploaded_files):
             f.write(content)
         saved_names.append(doc.name)
 
-    st.write(saved_names)
 
     ingest_documents(nom_corpus, saved_names)
 
@@ -48,8 +47,9 @@ def delete_document_from_corpus(nom_corpus, nom_document):
 
 
 def delete_corpus(nom_corpus):
-    corpus_path = os.path.join(chemin_corpus, nom_corpus)
-    shutil.rmtree(corpus_path)
+    for doc in get_documents_from_corpus(nom_corpus):
+        delete_document_from_corpus(nom_corpus, doc)
+    os.rmdir(os.path.join(chemin_corpus, nom_corpus))
 
 
 if __name__ == "__main__":

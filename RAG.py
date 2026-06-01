@@ -87,5 +87,4 @@ def query_RAG(nom_corpus, user_input):
         contexte += f"<source>{chunk.metadata['source']}</source>\n"
         contexte += f"<contenu>{chunk.page_content}</contenu>\n\n"
 
-    st.write(contexte)
     return contexte

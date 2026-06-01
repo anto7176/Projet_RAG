@@ -4,6 +4,7 @@ import os
 import uuid
 import shutil
 
+
 from corpus import add_corpus, add_documents_to_corpus
 from RAG import query_RAG, chemin_corpus
 
@@ -25,11 +26,12 @@ def get_wikipedia_page(mots_cles):
     print(f"[Wikipedia] Page trouvée : {page.title}")
     return page
 
-def recursive_sections_check(section):
-    sections = section.sections
-    for section in sections:
-        sections.extend(recursive_sections_check(section))
-    return sections
+def recursive_sections_check(page_or_section):
+    result = []
+    for section in page_or_section.sections:
+        result.append(section)
+        result.extend(recursive_sections_check(section))
+    return result
 
 def create_corpus(mots_cles, page):
     
@@ -64,9 +66,6 @@ def wikipedia_query(mots_cles, user_input):
     chroma_path = os.path.join(corpus_path, "chroma_db")
 
     if not os.path.exists(chroma_path):
-        import shutil
-        if os.path.exists(corpus_path):
-            shutil.rmtree(corpus_path)
         page = get_wikipedia_page(mots_cles)
         if page:
             create_corpus(mots_cles, page)

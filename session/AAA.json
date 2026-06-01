@@ -1,0 +1,10 @@
+{
+  "message": [],
+  "model": "mistral:latest",
+  "system_prompt": "AAA",
+  "corpus": "Wikipedia_Foot",
+  "wikipedia_keywords": "Aa",
+  "wikipedia_active": true,
+  "web_search": false,
+  "session_name": "AAA"
+}
