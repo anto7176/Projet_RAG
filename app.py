@@ -6,7 +6,7 @@ from wikipedia import *
 from session import *
 
 
-
+# saisie du nom du nouveau corpus
 @st.dialog("Ajouter un nouveau corpus")
 def popup_ajout_corpus():
     Nom_corpus = st.text_area(label="Nom du nouveau corpus :")
@@ -44,7 +44,7 @@ def popup_corpus(selected_corpus):
         delete_corpus(selected_corpus)
         st.rerun()
 
-
+# sauvegarde de la session avec un nom
 @st.dialog("Enregistrer la session")
 def popup_enregistrer():
     nom = st.text_input("Nom de la session :")
@@ -53,7 +53,7 @@ def popup_enregistrer():
         st.session_state["session_name"] = nom
         st.rerun()
 
-
+# chargement d'une session sauvegardée
 @st.dialog("Charger une session")
 def popup_charger():
     sessions = get_all_sessions()
@@ -65,7 +65,7 @@ def popup_charger():
         load_session(selected)
         st.rerun()
 
-
+# suppression d'une session sauvegardée
 @st.dialog("Supprimer la session")
 def popup_supprimer():
     sessions = get_all_sessions()
@@ -81,12 +81,14 @@ def popup_supprimer():
 
 def sidebar():
     with st.sidebar:
+        # affichage du nom de session ou titre par défaut
         session_name = st.session_state.get("session_name", "")
         if session_name:
             st.subheader(f"Session : {session_name}")
         else:
             st.subheader("Paramètres")
-
+            
+        # boutons de gestion des sessions
         col1, col2 = st.columns(2)
         with col1:
             if st.button("Nouvelle", width="stretch"):
@@ -104,15 +106,17 @@ def sidebar():
                 popup_supprimer()
 
         st.divider()
-
+        # sélection du modèle
         models_data = ollama.list()
         model_list = [model['model'] for model in models_data.get('models', []) 
               if 'embed' not in model['model']]
         selected_model = st.selectbox("Choisissez un modèle Ollama", options=model_list,index=model_list.index(st.session_state["model"]) if st.session_state.get("model") in model_list else 0)
 
+        # Def Preprompt
         st.write("Préprompt")
         system_prompt = st.text_area(label="Définissez le préprompt (System Prompt) :", height=150,value=st.session_state.get("system_prompt", ""))
 
+        # sélection du corpus RAG
         st.write("Bases de connaissances")
         corpus_list = get_corpus_list()
         selected_corpus = st.selectbox("Corpus local :", options=corpus_list,index=corpus_list.index(st.session_state["corpus"]) if st.session_state.get("corpus") in corpus_list else 0)
@@ -129,6 +133,7 @@ def sidebar():
 
         st.divider()
 
+        # config Wikipedia
         col1, col2 = st.columns([3, 1])
         with col1:
             wikipedia_keywords = st.text_input("Wikipedia :", placeholder="ex: ESEO",value=st.session_state.get("wikipedia_keywords", ""))
@@ -138,6 +143,7 @@ def sidebar():
                 value=st.session_state.get("wikipedia_active", False),
                 label_visibility="collapsed")
 
+        # config recherche web
         col1, col2 = st.columns([3, 1])
         with col1:
             st.write("Recherche Web")
@@ -150,6 +156,7 @@ def sidebar():
         st.info("Toutes modifications ici sera prise en compte des le prochain message")
         st.caption(f"Version : {st.__version__}")
     
+    # sauvegarde des paramètres dans le session_state
     st.session_state["model"] = selected_model
     st.session_state["system_prompt"] = system_prompt
     st.session_state["corpus"] = selected_corpus
@@ -167,14 +174,16 @@ def sidebar():
 
 
 def main():
-    st.title("Interface LLM")
+    st.title("Interface LLM Antoine VADOT")
     session_init()
     params = sidebar()
 
+    # affichage de l'historique des messages
     for msg in st.session_state["message"]:
         with st.chat_message(msg["role"]):
             st.write(msg["content"])
 
+     # envoi d'un nouveau message
     requete = st.chat_input(placeholder="Your message")
     if requete:
         with st.chat_message("user"):

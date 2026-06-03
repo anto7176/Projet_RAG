@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import ollama
 import streamlit as st
 
-
+# recherche DuckDuckGo et récupération des URLs
 def get_URL(mots_cles, max_results=3):
     urls = []
     with DDGS() as ddgs:
@@ -13,6 +13,8 @@ def get_URL(mots_cles, max_results=3):
             urls.append(r["href"])
     return urls
 
+
+# récupération du contenu texte d'une page web
 def get_page_content(url, max_chars=4000):
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36"
@@ -21,6 +23,7 @@ def get_page_content(url, max_chars=4000):
         response = httpx.get(url, headers=headers, timeout=10, follow_redirects=True)
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, "html.parser")
+            # suppression des balises inutiles
             for tag in soup(["script", "style", "nav", "header", "footer"]):
                 tag.decompose()
             texte = soup.get_text(separator=" ", strip=True)
@@ -29,6 +32,7 @@ def get_page_content(url, max_chars=4000):
         print(f"[Web] Erreur sur {url} : {e}")
     return ""
 
+# construction du contexte web à partir des URLs
 def web_query(urls):
     contexte = ""
     for url in urls:
@@ -40,7 +44,7 @@ def web_query(urls):
             contexte += f"<source>{url}</source>\n<contenu>{resume}</contenu>\n\n"
     return contexte
 
-
+# résumé du texte via ollama sans streaming
 def get_resume(texte):
     response = ollama.chat(
         model="mistral",

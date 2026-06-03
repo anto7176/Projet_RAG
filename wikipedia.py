@@ -8,7 +8,7 @@ import shutil
 from corpus import add_corpus, add_documents_to_corpus
 from RAG import query_RAG, chemin_corpus
 
-
+# récupération de la page Wikipedia
 def get_wikipedia_page(mots_cles):
     wiki = wikipediaapi.Wikipedia(language='fr', user_agent='MonAppRAG/1.0')
     page = wiki.page(mots_cles)
@@ -26,6 +26,7 @@ def get_wikipedia_page(mots_cles):
     print(f"[Wikipedia] Page trouvée : {page.title}")
     return page
 
+# récupération de toutes les sections de la page
 def recursive_sections_check(page_or_section):
     result = []
     for section in page_or_section.sections:
@@ -33,6 +34,7 @@ def recursive_sections_check(page_or_section):
         result.extend(recursive_sections_check(section))
     return result
 
+# création du corpus Wikipedia
 def create_corpus(mots_cles, page):
     
     nom_corpus = f"Wikipedia_{mots_cles.replace(' ', '_')}"
@@ -41,6 +43,7 @@ def create_corpus(mots_cles, page):
     tmp_dir = os.path.join(r"D:\Antoine_Vadot\Projet_RAG\tmp", str(uuid.uuid4()))
     os.makedirs(tmp_dir, exist_ok=True)
 
+    # création d'un fichier txt par section et ajout au corpus
     all_sections = recursive_sections_check(page)
     for section in all_sections:
         if not section.text:
@@ -55,11 +58,12 @@ def create_corpus(mots_cles, page):
         uploaded_file.name = section.title + ".txt"
         add_documents_to_corpus(nom_corpus, [uploaded_file])
 
+    # suppression du dossier temporaire
     shutil.rmtree(tmp_dir, ignore_errors=True)
-
     return nom_corpus
 
 
+# si le corpus n'existe pas encore on le crée
 def wikipedia_query(mots_cles, user_input):
     nom_corpus = f"Wikipedia_{mots_cles.replace(' ', '_')}"
     corpus_path = os.path.join(chemin_corpus, nom_corpus)
@@ -71,7 +75,8 @@ def wikipedia_query(mots_cles, user_input):
             create_corpus(mots_cles, page)
         else:
             return ""
-
+            
+    # requête RAG sur le corpus Wikipedia
     return query_RAG(nom_corpus, user_input)
 
 
