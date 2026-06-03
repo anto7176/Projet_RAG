@@ -1,0 +1,29 @@
+Les Revengers ne se battent pas contre des super-vilains extraterrestres, mais contre des ennemis bien plus redoutables : les deadlines de deux semaines, les serveurs de déploiement en panne, les projets de groupe en surnombre et l'administration scolaire.
+
+Voici la fiche d'identité officielle de cette équipe dysfonctionnelle mais terriblement attachante :
+
+Fiche Technique de l'Équipe
+
+    Quartier Général : Le fond de la classe, près des prises de courant pour brancher les ordinateurs portables qui surchauffent sur Unity.
+
+    Cri de ralliement : « C'est bon, ça compile (normalement) ! » ou « Quelqu'un a compris le coefficient de ce module ? »
+
+    Ennemi Juré : Le Rush de Fin de Semestre, une entité maléfique qui compacte des projets de six mois en seulement deux semaines.
+
+Les Membres Fondateurs et leurs Rôles
+
+    Le Leader Tactique – Navy Newt (Le Triton Marine) : C'est le stratège grognon de l'équipe. Son super-pouvoir est de repérer instantanément les failles d'organisation. Il passe son temps à hurler sur le fait que la structure est « à l'envers » et que les pipelines de déploiement auraient dû être configurés dès le premier jour.
+
+    Le Muscle Technique – Gray Goose (L'Oie Grise) : Le pilier sur lequel tout le monde se repose. Pendant que les autres paniquent, elle étudie la théorie, dompte Unity et règle les problèmes de tablettes. Sans elle, l'équipe n'aurait jamais de code fonctionnel à présenter.
+
+    L'Analyste Sceptique – Silver Shark (Le Requin d'Argent) : Il avance masqué, trouve les technologies « simplistes mais pertinentes », mais perd ses moyens dès qu'on le force à travailler dans un groupe de 5 où tout le monde se marche sur les pieds.
+
+    L'Anxieux du Timing – Brown Buffalo (Le Buffle Brun) : Le cœur émotionnel du groupe. Il adore partager des moments avec les autres filières, mais subit des attaques de panique dès qu'on aborde la « Théorie des Agents » (le fameux pouvoir déclenché TROP EN RETARD).
+
+    La Voix de la Justice – White Whale (La Baleine Blanche) : Elle ne code pas toujours au premier rang, mais elle possède l'attaque mentale la plus puissante contre l'administration : la réclamation pour opacité des coefficients de notes.
+
+    L'Infiltré Silencieux – Red Raccoon (Le Raton Laveur Rouge) : Personne ne sait ce qu'il fait, il n'a jamais ouvert la bouche du semestre, mais il est sur les feuilles de présence. C'est le gardien des secrets de l'équipe.
+
+Leurs Faiblesses Communes
+
+Bien qu'ils soient dotés d'une grande intelligence, les Revengers souffrent de la "Syndrome de la Clean Architecture" (le fait de passer plus de temps à préparer et concevoir le projet qu'à réellement produire du code) et d'une vulnérabilité critique aux changements de tarification des offres gratuites de Microsoft Cloud.

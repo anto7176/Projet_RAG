@@ -1,0 +1,3 @@
+Indigo Iguana (L'Iguane Indigo) : 
+Perfectionniste et idéaliste. 
+Il aurait voulu s'investir pour livrer une "solution fonctionnelle", mais le manque de temps et de cours magistraux théoriques (principes SOLID, architecture) l'ont empêché d'atteindre ses standards de qualité.

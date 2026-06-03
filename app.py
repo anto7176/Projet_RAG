@@ -4,7 +4,8 @@ from corpus import *
 import pandas as pd
 from wikipedia import *
 from session import *
-
+# "C:\Users\vadotant\AppData\Local\Programs\Ollama\ollama.exe" serve
+# & "C:/Program Files/Python311/python.exe" -m streamlit run app.py
 
 # saisie du nom du nouveau corpus
 @st.dialog("Ajouter un nouveau corpus")
